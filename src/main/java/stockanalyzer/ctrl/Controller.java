@@ -1,5 +1,6 @@
 package stockanalyzer.ctrl;
 
+import stockanalyzer.downloader.Downloader;
 import yahooApi.YahooFinanceException;
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
@@ -7,6 +8,7 @@ import yahoofinance.histquotes.Interval;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 
 public class Controller {
 
@@ -18,7 +20,7 @@ public class Controller {
 			stock = YahooFinance.get(ticker);
 
 			Calendar from = Calendar.getInstance();
-			from.add(Calendar.WEEK_OF_MONTH, -20); // last 8 weeks
+			from.add(Calendar.WEEK_OF_MONTH, -4); // last week
 
 			var result = stock.getHistory(from, Interval.DAILY).stream()
 					.mapToDouble(q -> q.getClose().doubleValue())
@@ -57,6 +59,10 @@ public class Controller {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void downloadTickers(List<String> tickers, Downloader downloader) throws YahooFinanceException {
+		downloader.process(tickers);
 	}
 
 }

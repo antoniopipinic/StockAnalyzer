@@ -1,11 +1,16 @@
 package stockanalyzer.ui;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 import stockanalyzer.ctrl.Controller;
+import stockanalyzer.downloader.Downloader;
+import stockanalyzer.downloader.ParallelDownloader;
+import stockanalyzer.downloader.SequentialDownloader;
 import yahooApi.YahooFinanceException;
 
 public class UserInterface
@@ -52,7 +57,48 @@ public class UserInterface
 			e.printStackTrace();
 		}
 	}
+	public void getDownloadedTickersSequential() {
+		try {
+			Downloader downloader;
+			List<String> tickers = new ArrayList<>();
+			tickers.add("AAPL");
+			tickers.add("AMZN");
+			tickers.add("FB");
+			tickers.add("EBAY");
+			tickers.add("KO");
 
+			SequentialDownloader sequentialDownloader = new SequentialDownloader();
+
+			ctrl.downloadTickers(tickers, sequentialDownloader);
+
+		} catch (YahooFinanceException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void getDownloadedTickersParallel() {
+		try {
+			Downloader downloader;
+			List<String> tickers = new ArrayList<>();
+			tickers.add("AAPL");
+			tickers.add("AMZN");
+			tickers.add("FB");
+			tickers.add("EBAY");
+			tickers.add("KO");
+			tickers.add("TSLA");
+			tickers.add("TME");
+			tickers.add("PLUG");
+			tickers.add("NVDA");
+
+
+			ParallelDownloader parallelDownloader = new ParallelDownloader();
+
+			ctrl.downloadTickers(tickers, parallelDownloader);
+
+		} catch (YahooFinanceException e) {
+			e.printStackTrace();
+		}
+	}
 	public void start() throws YahooFinanceException {
 		Menu<Runnable> menu = new Menu<>("User Interface");
 		menu.setTitel("Wählen Sie aus:");
@@ -62,6 +108,8 @@ public class UserInterface
 		menu.insert("d", "eBay Inc.", this::getDataFromCtrl4);
 		menu.insert("e", "The Coca-Cola Company", this::getDataFromCtrl5);
 		menu.insert("q", "Quit", null);
+		menu.insert("m", "Sequential Download", this::getDownloadedTickersSequential);
+		menu.insert("n", "Parallel Download", this::getDownloadedTickersParallel);
 		Runnable choice;
 		while ((choice = menu.exec()) != null) {
 			choice.run();
